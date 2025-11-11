@@ -1,65 +1,49 @@
 package teamate;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Simple CSV reader/writer for our format.
- * Input columns: id,name,game,role,skill,q1,q2,q3,q4,q5
+ * Utility class to load participants from CSV
  */
 public class CSVUtil {
 
-    public static List<Participant> readParticipants(String filename) throws IOException {
-        List<Participant> list = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-            String header = br.readLine();
-            if (header == null) throw new IOException("Empty file");
-            String line;
-            int lineNo = 1;
-            while ((line = br.readLine()) != null) {
-                lineNo++;
-                if (line.trim().isEmpty()) continue;
-                String[] cols = line.split(",");
-                if (cols.length < 10) {
-                    throw new IOException("Invalid data at line " + lineNo + ": found " + cols.length + " columns");
-                }
-                String id = cols[0].trim();
-                String name = cols[1].trim();
-                String game = cols[2].trim();
-                String role = cols[3].trim();
-                int skill = Integer.parseInt(cols[4].trim());
-                int[] resp = new int[5];
-                for (int i=0;i<5;i++){
-                    resp[i] = Integer.parseInt(cols[5 + i].trim());
-                }
-                Participant p = new Participant(id, name, game, role, skill, resp);
-                list.add(p);
-            }
-        }
-        return list;
-    }
+    /**
+     * Load participants from CSV file
+     * @param filePath path to CSV file
+     * @return list of Participant objects
+     */
+    public static List<Participant> loadParticipants(String filePath) {
+        List<Participant> participants = new ArrayList<>();
 
-    public static void writeTeams(String filename, List<Team> teams) throws IOException {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename))) {
-            // header
-            bw.write("team_id,member_id,member_name,game,role,skill,personalityScore,personalityType");
-            bw.newLine();
-            for (Team t : teams) {
-                for (Participant p : t.getMembers()) {
-                    bw.write(String.join(",",
-                            t.getId(),
-                            p.getId(),
-                            p.getName(),
-                            p.getGame(),
-                            p.getRole(),
-                            Integer.toString(p.getSkill()),
-                            Integer.toString(p.getPersonalityScore()),
-                            p.getPersonalityType()
-                    ));
-                    bw.newLine();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            br.readLine(); // skip header
+
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+
+                if (data.length >= 8) {
+                    Participant p = new Participant(
+                            data[0].trim(), // ID
+                            data[1].trim(), // Name
+                            data[2].trim(), // Email
+                            data[3].trim(), // PreferredGame
+                            Integer.parseInt(data[4].trim()), // SkillLevel
+                            data[5].trim(), // PreferredRole
+                            Integer.parseInt(data[6].trim()), // PersonalityScore
+                            data[7].trim()  // PersonalityType
+                    );
+                    participants.add(p);
                 }
             }
+        } catch (IOException e) {
+            System.out.println("Error reading CSV: " + e.getMessage());
         }
+
+        return participants;
     }
 }
