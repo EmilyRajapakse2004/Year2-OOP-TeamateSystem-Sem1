@@ -1,53 +1,57 @@
 package teamate;
 
-import java.util.Arrays;
-
+/**
+ * Represents a participant in the gaming club
+ */
 public class Participant {
     private String id;
     private String name;
-    private String game;
-    private String role;
-    private int skill; // 1-100
-    private int[] responses; // 5 responses 1..5
-    private int personalityScore; // 0..100
-    private String personalityType; // Leader/Balanced/Thinker
+    private String email;
+    private String preferredGame;
+    private int skillLevel;
+    private String preferredRole;
+    private int personalityScore;
+    private String personalityType;
 
-    public Participant(String id, String name, String game, String role, int skill, int[] responses) {
+    public Participant(String id, String name, String email, String preferredGame,
+                       int skillLevel, String preferredRole, int personalityScore, String personalityType) {
         this.id = id;
         this.name = name;
-        this.game = game;
-        this.role = role;
-        this.skill = skill;
-        this.responses = responses == null ? new int[5] : Arrays.copyOf(responses, responses.length);
+        this.email = email;
+        this.preferredGame = preferredGame;
+        this.skillLevel = skillLevel;
+        this.preferredRole = preferredRole;
+        this.personalityScore = personalityScore;
+        this.personalityType = personalityType;
     }
 
-    public String getId(){ return id; }
-    public String getName(){ return name; }
-    public String getGame(){ return game; }
-    public String getRole(){ return role; }
-    public int getSkill(){ return skill; }
-    public int[] getResponses(){ return Arrays.copyOf(responses, responses.length); }
-    public int getPersonalityScore(){ return personalityScore; }
-    public void setPersonalityScore(int score){ this.personalityScore = score; }
-    public String getPersonalityType(){ return personalityType; }
-    public void setPersonalityType(String t){ this.personalityType = t; }
+    // Getters and Setters
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public String toCSVRow(){
-        StringBuilder sb = new StringBuilder();
-        sb.append(id).append(",").append(name).append(",")
-                .append(game).append(",").append(role).append(",")
-                .append(skill).append(",");
-        for (int i = 0; i < responses.length; i++){
-            sb.append(responses[i]);
-            if (i < responses.length-1) sb.append(",");
-        }
-        sb.append(",").append(personalityScore).append(",").append(personalityType);
-        return sb.toString();
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getPreferredGame() { return preferredGame; }
+    public void setPreferredGame(String preferredGame) { this.preferredGame = preferredGame; }
+
+    public int getSkillLevel() { return skillLevel; }
+    public void setSkillLevel(int skillLevel) { this.skillLevel = skillLevel; }
+
+    public String getPreferredRole() { return preferredRole; }
+    public void setPreferredRole(String preferredRole) { this.preferredRole = preferredRole; }
+
+    public int getPersonalityScore() { return personalityScore; }
+    public void setPersonalityScore(int personalityScore) { this.personalityScore = personalityScore; }
+
+    public String getPersonalityType() { return personalityType; }
+    public void setPersonalityType(String personalityType) { this.personalityType = personalityType; }
 
     @Override
-    public String toString(){
-        return String.format("%s (%s) role=%s game=%s skill=%d pScore=%d pType=%s",
-                name, id, role, game, skill, personalityScore, personalityType);
+    public String toString() {
+        return id + " - " + name + " (" + preferredGame + ", " + preferredRole + ", " + personalityType + ", Skill: " + skillLevel + ")";
     }
 }
