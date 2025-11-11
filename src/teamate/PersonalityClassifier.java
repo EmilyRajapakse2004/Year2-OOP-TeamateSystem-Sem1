@@ -13,6 +13,6 @@ public class PersonalityClassifier {
     public static String classify(int score) {
         if (score >= 90) return "Leader";
         else if (score >= 70) return "Balanced";
-        else return "Thinker";
+        else return "Thinker;
     }
 }
