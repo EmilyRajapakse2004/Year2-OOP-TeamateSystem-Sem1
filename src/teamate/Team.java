@@ -2,47 +2,46 @@ package teamate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * Represents a team of participants
+ */
 public class Team {
-    private String id;
     private List<Participant> members;
+    private String teamName;
 
-    public Team(String id) {
-        this.id = id;
+    public Team(String teamName) {
+        this.teamName = teamName;
         this.members = new ArrayList<>();
     }
 
-    public String getId(){ return id; }
-    public List<Participant> getMembers(){ return members; }
-
-    public void addMember(Participant p){ members.add(p); }
-    public void removeMember(Participant p){ members.remove(p); }
-    public int size(){ return members.size(); }
-
-    public double getAvgSkill(){
-        if (members.isEmpty()) return 0.0;
-        return members.stream().mapToInt(Participant::getSkill).average().orElse(0.0);
+    public void addMember(Participant p) {
+        members.add(p);
     }
 
-    public boolean containsRole(String role){
-        return members.stream().anyMatch(m -> m.getRole().equalsIgnoreCase(role));
+    public List<Participant> getMembers() {
+        return members;
     }
 
-    public int countPersonality(String type){
-        return (int) members.stream().filter(m -> m.getPersonalityType().equalsIgnoreCase(type)).count();
+    public String getTeamName() {
+        return teamName;
     }
 
-    public int countGame(String game){
-        return (int) members.stream().filter(m -> m.getGame().equalsIgnoreCase(game)).count();
-    }
-
-    public List<String> rolesPresent(){
-        return members.stream().map(Participant::getRole).distinct().collect(Collectors.toList());
+    public int getTotalSkill() {
+        int total = 0;
+        for (Participant p : members) {
+            total += p.getSkillLevel();
+        }
+        return total;
     }
 
     @Override
-    public String toString(){
-        return String.format("Team %s members=%d avgSkill=%.2f", id, members.size(), getAvgSkill());
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Team: ").append(teamName).append("\n");
+        for (Participant p : members) {
+            sb.append("  ").append(p).append("\n");
+        }
+        return sb.toString();
     }
 }
