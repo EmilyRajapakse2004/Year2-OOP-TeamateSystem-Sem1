@@ -1,46 +1,32 @@
 package teamate;
 
-import java.util.*;
-import java.util.concurrent.ExecutionException;
+import java.util.List;
 
+/**
+ * Main class to run TeamMate system
+ */
 public class Main {
-
     public static void main(String[] args) {
-        String input = "participants_sample.csv";
-        String output = "formed_teams.csv";
+        String filePath = "data/participants_sample.csv"; // relative path
 
-        // Allow CLI args to specify team size
-        int teamSize = 5;
-        if (args.length >= 1) {
-            try {
-                teamSize = Integer.parseInt(args[0]);
-            } catch (NumberFormatException ex) {
-                System.err.println("Invalid team size passed - using default 5");
-            }
+        // 1. Load participants
+        List<Participant> participants = CSVUtil.loadParticipants(filePath);
+        System.out.println("Total participants loaded: " + participants.size());
+
+        // 2. Classify personality (optional, if not in CSV)
+        for (Participant p : participants) {
+            String personality = PersonalityClassifier.classify(p.getPersonalityScore());
+            p.setPersonalityType(personality);
         }
-        System.out.println("Team size: " + teamSize);
 
-        try {
-            List<Participant> participants = CSVUtil.readParticipants(input);
-            System.out.println("Loaded participants: " + participants.size());
-            // print sample
-            // Build teams
-            TeamBuilder builder = new TeamBuilder(teamSize, 2, Math.min(3, teamSize));
-            List<Team> teams = builder.buildTeams(participants);
+        // 3. Build teams (team size 5 for example)
+        int teamSize = 5;
+        TeamBuilder builder = new TeamBuilder(participants, teamSize);
+        List<Team> teams = builder.buildTeams();
 
-            // Display teams summary
-            for (Team t : teams) {
-                System.out.println(t);
-                for (Participant p : t.getMembers()) {
-                    System.out.println("  - " + p);
-                }
-            }
-
-            CSVUtil.writeTeams(output, teams);
-            System.out.println("Formed teams written to " + output);
-        } catch (Exception ex) {
-            System.err.println("Error: " + ex.getMessage());
-            ex.printStackTrace();
+        // 4. Print teams
+        for (Team t : teams) {
+            System.out.println(t);
         }
     }
 }
