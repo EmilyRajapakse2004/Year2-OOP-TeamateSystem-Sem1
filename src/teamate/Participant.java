@@ -1,8 +1,5 @@
 package teamate;
 
-/**
- * Represents a participant in the gaming club
- */
 public class Participant {
     private String id;
     private String name;
@@ -27,31 +24,26 @@ public class Participant {
 
     // Getters and Setters
     public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
-
     public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
     public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
     public String getPreferredGame() { return preferredGame; }
-    public void setPreferredGame(String preferredGame) { this.preferredGame = preferredGame; }
-
     public int getSkillLevel() { return skillLevel; }
-    public void setSkillLevel(int skillLevel) { this.skillLevel = skillLevel; }
-
     public String getPreferredRole() { return preferredRole; }
-    public void setPreferredRole(String preferredRole) { this.preferredRole = preferredRole; }
-
     public int getPersonalityScore() { return personalityScore; }
-    public void setPersonalityScore(int personalityScore) { this.personalityScore = personalityScore; }
-
     public String getPersonalityType() { return personalityType; }
+
+    public void setId(String id) { this.id = id; }
+    public void setName(String name) { this.name = name; }
+    public void setEmail(String email) { this.email = email; }
+    public void setPreferredGame(String preferredGame) { this.preferredGame = preferredGame; }
+    public void setSkillLevel(int skillLevel) { this.skillLevel = skillLevel; }
+    public void setPreferredRole(String preferredRole) { this.preferredRole = preferredRole; }
+    public void setPersonalityScore(int personalityScore) { this.personalityScore = personalityScore; }
     public void setPersonalityType(String personalityType) { this.personalityType = personalityType; }
 
     @Override
     public String toString() {
-        return id + " - " + name + " (" + preferredGame + ", " + preferredRole + ", " + personalityType + ", Skill: " + skillLevel + ")";
+        return String.format("%s (%s) - Game: %s, Role: %s, Skill: %d, Personality: %s",
+                name, id, preferredGame, preferredRole, skillLevel, personalityType);
     }
 }
