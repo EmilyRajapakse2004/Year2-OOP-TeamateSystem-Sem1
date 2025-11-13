@@ -1,14 +1,17 @@
 package teamate;
 
+/**
+ * Participant entity class
+ */
 public class Participant {
     private String id;
     private String name;
     private String email;
     private String preferredGame;
-    private int skillLevel;
+    private int skillLevel; // 1..10
     private String preferredRole;
-    private int personalityScore;
-    private String personalityType;
+    private int personalityScore; // 0..100
+    private String personalityType; // "Leader","Balanced","Thinker","Undefined"
 
     public Participant(String id, String name, String email, String preferredGame,
                        int skillLevel, String preferredRole, int personalityScore, String personalityType) {
@@ -22,28 +25,53 @@ public class Participant {
         this.personalityType = personalityType;
     }
 
-    // Getters and Setters
+    // Getters & setters
     public String getId() { return id; }
-    public String getName() { return name; }
-    public String getEmail() { return email; }
-    public String getPreferredGame() { return preferredGame; }
-    public int getSkillLevel() { return skillLevel; }
-    public String getPreferredRole() { return preferredRole; }
-    public int getPersonalityScore() { return personalityScore; }
-    public String getPersonalityType() { return personalityType; }
-
     public void setId(String id) { this.id = id; }
+
+    public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
+    public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public String getPreferredGame() { return preferredGame; }
     public void setPreferredGame(String preferredGame) { this.preferredGame = preferredGame; }
+
+    public int getSkillLevel() { return skillLevel; }
     public void setSkillLevel(int skillLevel) { this.skillLevel = skillLevel; }
+
+    public String getPreferredRole() { return preferredRole; }
     public void setPreferredRole(String preferredRole) { this.preferredRole = preferredRole; }
+
+    public int getPersonalityScore() { return personalityScore; }
     public void setPersonalityScore(int personalityScore) { this.personalityScore = personalityScore; }
+
+    public String getPersonalityType() { return personalityType; }
     public void setPersonalityType(String personalityType) { this.personalityType = personalityType; }
 
     @Override
     public String toString() {
-        return String.format("%s (%s) - Game: %s, Role: %s, Skill: %d, Personality: %s",
-                name, id, preferredGame, preferredRole, skillLevel, personalityType);
+        return String.format("%s (%s) - Game:%s Role:%s Skill:%d PScore:%d PType:%s",
+                name, id, preferredGame, preferredRole, skillLevel, personalityScore, personalityType);
+    }
+
+    // CSV-friendly row for writing: values separated by comma, escaping not handled (CSV assumed simple)
+    public String toCSVRow(String teamId) {
+        return String.join(",",
+                teamId,
+                safe(id),
+                safe(name),
+                safe(email),
+                safe(preferredGame),
+                safe(preferredRole),
+                Integer.toString(skillLevel),
+                Integer.toString(personalityScore),
+                safe(personalityType)
+        );
+    }
+
+    private String safe(String s) {
+        return s == null ? "" : s.replace(",", ""); // naive CSV safety: remove commas from fields
     }
 }
