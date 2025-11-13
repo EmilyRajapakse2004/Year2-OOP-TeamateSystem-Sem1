@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 /**
  * Team container with helper methods for constraints
- *
+ */
 public class Team {
     private final List<Participant> members;
 
