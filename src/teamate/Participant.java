@@ -2,7 +2,7 @@ package teamate;
 
 /**
  * Participant entity class
- */
+ *
 public class Participant {
     private String id;
     private String name;
