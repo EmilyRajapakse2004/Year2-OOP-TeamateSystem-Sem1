@@ -13,7 +13,7 @@ public class PersonalityClassifier {
     /**
      * Calculate scaled personality score from five answers (1..5).
      * @return scaled score (20..100) or -1 on invalid inputs
-     */
+     *
     public static int calculateScore(int q1, int q2, int q3, int q4, int q5) {
         if (!validAnswer(q1) || !validAnswer(q2) || !validAnswer(q3) || !validAnswer(q4) || !validAnswer(q5)) {
             return -1;
