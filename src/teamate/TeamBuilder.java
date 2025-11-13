@@ -14,7 +14,7 @@ import java.util.concurrent.*;
  *
  * Concurrency:
  * - buildTeams uses a thread pool to assign remaining participants in parallel.
- *
+ */
 public class TeamBuilder {
     private final List<Participant> participants;
     private final int teamSize;
