@@ -8,7 +8,7 @@ import java.util.List;
  * CSV utilities: load participants from CSV and save formed teams.
  * Expects input CSV columns:
  * ID,Name,Email,PreferredGame,SkillLevel,PreferredRole,PersonalityScore,PersonalityType
- *
+ */
 public class CSVUtil {
 
     public static List<Participant> loadParticipants(String path) {
