@@ -13,7 +13,7 @@ import java.util.concurrent.*;
  * - concurrently classify (ensure personality types)
  * - build balanced teams
  * - save formed_teams.csv
- *
+ */
 public class Main {
 
     public static void main(String[] args) {
