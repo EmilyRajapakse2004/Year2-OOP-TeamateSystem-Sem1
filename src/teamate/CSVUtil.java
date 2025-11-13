@@ -4,49 +4,78 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * CSV utilities: load participants from CSV and save formed teams.
+ * Expects input CSV columns:
+ * ID,Name,Email,PreferredGame,SkillLevel,PreferredRole,PersonalityScore,PersonalityType
+ */
 public class CSVUtil {
 
-    // Load participants from CSV
-    public static List<Participant> loadParticipants(String filepath) {
-        List<Participant> participants = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
-            String line;
-            br.readLine(); // skip header
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data.length < 8) continue; // skip invalid
-                Participant p = new Participant(
-                        data[0], data[1], data[2],
-                        data[3], Integer.parseInt(data[4]),
-                        data[5], Integer.parseInt(data[6]),
-                        data[7]
-                );
-                participants.add(p);
-            }
-        } catch (Exception e) {
-            System.out.println("Error loading CSV: " + e.getMessage());
+    public static List<Participant> loadParticipants(String path) {
+        List<Participant> list = new ArrayList<>();
+        File f = new File(path);
+        if (!f.exists()) {
+            System.out.println("CSV file not found: " + path);
+            return list;
         }
-        return participants;
+        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+            String header = br.readLine(); // skip header
+            if (header == null) return list;
+
+            String line;
+            int lineNo = 1;
+            while ((line = br.readLine()) != null) {
+                lineNo++;
+                if (line.trim().isEmpty()) continue;
+                String[] cols = line.split(",", -1); // keep empty fields
+                if (cols.length < 8) {
+                    System.out.println("Skipping invalid line " + lineNo + ": insufficient columns");
+                    continue;
+                }
+                try {
+                    String id = cols[0].trim();
+                    String name = cols[1].trim();
+                    String email = cols[2].trim();
+                    String game = cols[3].trim();
+                    int skill = Integer.parseInt(cols[4].trim());
+                    String role = cols[5].trim();
+                    int pScore = Integer.parseInt(cols[6].trim());
+                    String pType = cols[7].trim();
+                    // Validate ranges
+                    if (skill < 1) skill = 1;
+                    if (skill > 10) skill = 10;
+                    if (pScore < 0 || pScore > 100) pType = "Undefined";
+                    Participant p = new Participant(id, name, email, game, skill, role, pScore, pType);
+                    list.add(p);
+                } catch (NumberFormatException nfe) {
+                    System.out.println("Skipping line " + lineNo + " due to parse error: " + nfe.getMessage());
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading CSV: " + e.getMessage());
+        }
+        return list;
     }
 
-    // Save teams to CSV
-    public static void saveTeams(String filepath, List<Team> teams) {
-        try (PrintWriter pw = new PrintWriter(new FileWriter(filepath))) {
-            pw.println("TeamID,ParticipantID,Name,Email,Game,Role,Skill,PersonalityScore,PersonalityType");
+    /**
+     * Save teams to CSV path.
+     * Columns: TeamID,ParticipantID,Name,Email,Game,Role,Skill,PersonalityScore,PersonalityType
+     */
+    public static void saveTeams(String path, List<Team> teams) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
+            bw.write("TeamID,ParticipantID,Name,Email,Game,Role,Skill,PersonalityScore,PersonalityType");
+            bw.newLine();
             int teamId = 1;
             for (Team t : teams) {
                 for (Participant p : t.getMembers()) {
-                    pw.printf("%d,%s,%s,%s,%s,%s,%d,%d,%s\n",
-                            teamId, p.getId(), p.getName(), p.getEmail(),
-                            p.getPreferredGame(), p.getPreferredRole(),
-                            p.getSkillLevel(), p.getPersonalityScore(),
-                            p.getPersonalityType()
-                    );
+                    bw.write(p.toCSVRow(Integer.toString(teamId)));
+                    bw.newLine();
                 }
                 teamId++;
             }
+            System.out.println("Saved formed teams to: " + path);
         } catch (IOException e) {
-            System.out.println("Error saving teams CSV: " + e.getMessage());
+            System.out.println("Error writing teams CSV: " + e.getMessage());
         }
     }
 }
