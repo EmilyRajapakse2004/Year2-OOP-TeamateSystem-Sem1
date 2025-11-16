@@ -5,6 +5,15 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.*;
 
+/**
+ * Main :
+ * - load participants_sample.csv (if user chooses)
+ * - optionally add participants manually via survey (Q1..Q5 + game + role + skill)
+ * - ask for team size (3..6)
+ * - concurrently classify (ensure personality types)
+ * - build balanced teams
+ * - save formed_teams.csv
+ */
 public class Main {
 
     public static void main(String[] args) {
