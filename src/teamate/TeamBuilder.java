@@ -5,11 +5,11 @@ import java.util.concurrent.*;
 
 /**
  * TeamBuilder creates balanced teams with the following constraints:
- * - teamSize between 3 and 6 (caller ensures)
+ * - teamSize between 3 and 6
  * - max 2 members from same game per team
- * - at least minRoles = min(3, teamSize) distinct roles per team (post-processed)
+ * - at least minRoles = min(3, teamSize)
  * - personality mix: ideally 1 Leader, 1-2 Thinkers, rest Balanced
- * - skill balance: try to place higher skill players into teams with lower avg skill
+ * - skill balance: this try to place higher skill players into teams with lower avg skill
  * - randomize when multiple options exist
  *
  * Concurrency:
@@ -22,14 +22,10 @@ public class TeamBuilder {
     private final Random rnd = new Random();
 
     public TeamBuilder(List<Participant> participants, int teamSize) {
-        // shallow copy to avoid mutating original list
         this.participants = new ArrayList<>(participants);
         this.teamSize = teamSize;
     }
 
-    /**
-     * Main entry to build teams
-     */
     public List<Team> buildTeams() {
         if (teamSize < 3 || teamSize > 6) {
             throw new IllegalArgumentException("teamSize must be between 3 and 6");
@@ -38,7 +34,7 @@ public class TeamBuilder {
         int numTeams = (int) Math.ceil(total / (double) teamSize);
         if (numTeams == 0) return new ArrayList<>();
 
-        // Ensure all participants have personalityType set
+        // Ensures all participants have personalityType set
         participants.forEach(p -> {
             if (p.getPersonalityType() == null || p.getPersonalityType().trim().isEmpty() ||
                     p.getPersonalityType().equalsIgnoreCase("Undefined")) {
@@ -76,7 +72,8 @@ public class TeamBuilder {
 
         // assign 1 thinker per team where possible, then a second thinker to some teams (max 2)
         assignRoundRobin(teams, thinkers);
-        assignRoundRobin(teams, thinkers); // second pass - teams that can accept second thinker will get one
+        // second pass - teams that can accept second thinker will get one
+        assignRoundRobin(teams, thinkers);
 
         // assign 1 balanced per team to fill base personality requirements
         assignRoundRobin(teams, balanced);
@@ -88,10 +85,10 @@ public class TeamBuilder {
         remaining.addAll(balanced.stream().filter(p -> !isAssigned(p, teams)).toList());
         remaining.addAll(others);
 
-        // Also add any participants not yet assigned (safe-check)
+        // Also add any participants not yet assigned
         for (Participant p : participants) if (!isAssigned(p, teams) && !remaining.contains(p)) remaining.add(p);
 
-        // To help skill balance: sort remaining by skill descending (place strong players in weaker teams)
+        // To help skill balance: sort remaining by skill descending (placing strong players in weaker teams)
         remaining.sort((a, b) -> Integer.compare(b.getSkillLevel(), a.getSkillLevel()));
 
         // Now assign remaining participants concurrently: each task picks best team for that participant
@@ -155,7 +152,7 @@ public class TeamBuilder {
             it.remove();
             t = (t + 1) % teams.size();
             if (!placed) {
-                // participant removed from pool but not assigned here; it'll be placed during remaining assignment
+
             }
         }
     }
@@ -189,7 +186,7 @@ public class TeamBuilder {
                 long gameCount = team.countByGame(p.getPreferredGame());
                 if (gameCount >= maxSameGamePerTeam) score += 50;
 
-                // role diversity reward/penalty: prefer teams missing this role
+                // role diversity : prefer teams missing this role
                 if (team.rolesPresent().contains(p.getPreferredRole())) score += 5;
                 else score -= 10;
 
@@ -209,7 +206,7 @@ public class TeamBuilder {
 
                 // skill balancing: prefer teams with lower avg skill
                 double avg = team.getAvgSkill();
-                score += avg; // teams with higher avg get higher score (less preferred)
+                score += avg;
 
                 // small random tie-breaker
                 score += rnd.nextDouble() * 0.5;
@@ -243,7 +240,7 @@ public class TeamBuilder {
     private void postProcessSwapForRolesAndPersonality(List<Team> teams) {
         int minRoles = Math.min(3, teamSize);
 
-        // try to ensure each team has at least one leader (if enough leaders exist overall)
+        // try to ensure each team has at least one leader
         int totalLeaders = participants.stream().filter(p -> "Leader".equalsIgnoreCase(p.getPersonalityType())).toArray().length;
         if (totalLeaders >= teams.size()) {
             // for teams without leader, try to swap with a team that has >1 leader
@@ -293,7 +290,7 @@ public class TeamBuilder {
                 }
             }
             if (candidate != null) {
-                // try to find someone from 'need' to swap back that donor is missing type/role/etc
+                // try to find someone from need to swap back that donor is missing type/role/etc
                 Participant toMoveBack = null;
                 synchronized (need) {
                     for (Participant q : need.getMembers()) {
@@ -316,9 +313,8 @@ public class TeamBuilder {
         return false;
     }
 
-    /**
-     * Attempt swaps to increase distinct roles for team 'need'
-     */
+    //Attempt swaps to increase distinct roles for team 'need'
+
     private boolean tryImproveRolesBySwap(Team need, List<Team> teams) {
         for (Team donor : teams) {
             if (donor == need) continue;
@@ -330,7 +326,7 @@ public class TeamBuilder {
                 }
             }
             if (candidate == null) continue;
-            // find participant in need to move to donor (ideally with role donor lacks)
+            // find participant in need to move to donor
             Participant toMove = null;
             synchronized (need) {
                 for (Participant q : need.getMembers()) {
@@ -339,7 +335,7 @@ public class TeamBuilder {
                 }
             }
             if (toMove == null) {
-                // if not found, pick any participant from need (lowest impact)
+                // if not found, pick any participant from need
                 synchronized (need) {
                     if (!need.getMembers().isEmpty()) toMove = need.getMembers().get(0);
                 }
