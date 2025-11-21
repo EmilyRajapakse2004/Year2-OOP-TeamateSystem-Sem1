@@ -17,10 +17,11 @@ public class Main {
 
         // top-level role selection loop
         while (true) {
-            System.out.println("\nSelect role: " +
-                    "(1) Organizer  " +
-                    "(2) Participant  " +
-                    "(3) Exit");
+            System.out.println("\nSelect role: ");
+            System.out.println("(1) Organizer  ");
+            System.out.println("(2) Participant");
+            System.out.println("(3) Exit");
+
 
             String choice = sc.nextLine().trim();
             if (choice.equals("1")) {
