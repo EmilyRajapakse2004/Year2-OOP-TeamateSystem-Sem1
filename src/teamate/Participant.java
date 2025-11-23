@@ -1,8 +1,6 @@
 package teamate;
 
-/**
- * Participant entity class
- */
+//Participant entity class
 public class Participant {
     private String id;
     private String name;
