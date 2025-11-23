@@ -5,15 +5,11 @@ import java.util.*;
 
 /**
  * CSV utilities: load participants from CSV and save formed teams.
- * CSV columns expected (header):
  * ID,Name,Email,PreferredGame,SkillLevel,PreferredRole,PersonalityScore,PersonalityType
  */
 public class CSVUtil {
 
-    /**
-     * Load participants from CSV. Skips duplicate IDs/emails and malformed rows.
-     * Returns list of valid Participant objects.
-     */
+    //Load participants from CSV. Skips duplicate IDs/emails and malformed rows.
     public static List<Participant> loadParticipants(String path) {
         List<Participant> list = new ArrayList<>();
         File f = new File(path);
@@ -105,10 +101,7 @@ public class CSVUtil {
         return list;
     }
 
-    /**
-     * Save teams to CSV path.
-     * Columns: TeamID,ParticipantID,Name,Email,Game,Role,Skill,PersonalityScore,PersonalityType
-     */
+    //Save teams to CSV path
     public static void saveTeams(String path, List<Team> teams) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
             bw.write("TeamID,ParticipantID,Name,Email,Game,Role,Skill,PersonalityScore,PersonalityType");
