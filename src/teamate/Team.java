@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * Team container with helper methods for constraints
- */
+//Team container with helper methods for constraints
 public class Team {
     private final List<Participant> members;
 
