@@ -76,7 +76,7 @@ public class Main {
         System.out.println("Forming teams...");
         List<Team> teams = builder.buildTeams();
 
-        // Display teams
+        // Display the teams
         for (Team t : teams) System.out.println(t);
 
         CSVUtil.saveTeams("data/formed_teams.csv", teams);
