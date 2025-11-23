@@ -1,7 +1,6 @@
 package teamate;
 
 /**
- * Personality classification utilities.
  * - Score calculation: sum of five 1..5 answers * 4 -> 20..100
  * - Classification ranges:
  *   90-100 -> Leader
@@ -10,10 +9,7 @@ package teamate;
  */
 public class PersonalityClassifier {
 
-    /**
-     * Calculate scaled personality score from five answers (1..5).
-     * @return scaled score (20..100) or -1 on invalid inputs
-     */
+    //Calculate scaled personality score from five answers (1..5)
     public static int calculateScore(int q1, int q2, int q3, int q4, int q5) {
         if (!validAnswer(q1) || !validAnswer(q2) || !validAnswer(q3) || !validAnswer(q4) || !validAnswer(q5)) {
             return -1;
@@ -28,7 +24,7 @@ public class PersonalityClassifier {
 
     /**
      * Classify score to personality type
-     */
+
     public static String classify(int score) {
         if (score >= 90 && score <= 100) return "Leader";
         if (score >= 70 && score <= 89) return "Balanced";
