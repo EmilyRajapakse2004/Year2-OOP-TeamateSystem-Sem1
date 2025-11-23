@@ -22,8 +22,7 @@ public class PersonalityClassifier {
         return q >= 1 && q <= 5;
     }
 
-    /**
-     * Classify score to personality type
+    //Classify score to personality type
 
     public static String classify(int score) {
         if (score >= 90 && score <= 100) return "Leader";
